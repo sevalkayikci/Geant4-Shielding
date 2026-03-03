@@ -1,0 +1,13 @@
+# ===== Shield Simulation =====
+
+/run/initialize
+
+/control/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+/gun/particle gamma
+/gun/energy 0.662 MeV
+
+/run/beamOn 40000
