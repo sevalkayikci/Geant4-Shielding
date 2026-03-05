@@ -13,10 +13,14 @@ public:
   PrimaryGeneratorAction();
   virtual ~PrimaryGeneratorAction();
 
-  virtual void GeneratePrimaries(G4Event *event) override;
+  virtual void GeneratePrimaries(G4Event* event) override;
+
+  void     SetEnergy(G4double e) { fEnergy = e; }
+  G4double GetEnergy()     const { return fEnergy; }
 
 private:
-  G4ParticleGun *fParticleGun;
+  G4ParticleGun* fParticleGun;
+  G4double       fEnergy;
 };
 
 #endif

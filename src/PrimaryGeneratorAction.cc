@@ -8,22 +8,14 @@
 
 PrimaryGeneratorAction::PrimaryGeneratorAction()
     : G4VUserPrimaryGeneratorAction(),
-      fParticleGun(nullptr)
+      fParticleGun(nullptr),
+      fEnergy(0.662 * MeV) // Cs-137 default
 {
   fParticleGun = new G4ParticleGun(1);
 
-  auto particleTable = G4ParticleTable::GetParticleTable();
-  auto gamma = particleTable->FindParticle("gamma");
-
+  auto gamma = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
   fParticleGun->SetParticleDefinition(gamma);
-
-  // Cs-137 gibi 662 keV örnek (istersen değiştir)
-  fParticleGun->SetParticleEnergy(0.662 * MeV);
-
-  // Kaynak: Shield'in önüne koy (z ekseni negatiften pozitife at)
   fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, -20 * cm));
-
-  // Yön: +z (shield ve detector'a doğru)
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, 1));
 }
 
@@ -32,7 +24,8 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
   delete fParticleGun;
 }
 
-void PrimaryGeneratorAction::GeneratePrimaries(G4Event *event)
+void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 {
+  fParticleGun->SetParticleEnergy(fEnergy);
   fParticleGun->GeneratePrimaryVertex(event);
 }

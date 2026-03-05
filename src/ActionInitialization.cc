@@ -1,14 +1,13 @@
 #include "ActionInitialization.hh"
+#include "DetectorConstruction.hh"
 
 #include "PrimaryGeneratorAction.hh"
 #include "RunAction.hh"
 #include "EventAction.hh"
 #include "SteppingAction.hh"
 
-#include "G4RunManager.hh"
-
-ActionInitialization::ActionInitialization()
-    : G4VUserActionInitialization()
+ActionInitialization::ActionInitialization(DetectorConstruction* det, bool writeRoot)
+    : G4VUserActionInitialization(), fDetector(det), fWriteRoot(writeRoot)
 {
 }
 
@@ -16,17 +15,15 @@ ActionInitialization::~ActionInitialization() {}
 
 void ActionInitialization::Build() const
 {
-  // Primary (kaynak)
-  SetUserAction(new PrimaryGeneratorAction());
+  auto gen = new PrimaryGeneratorAction();
+  SetUserAction(gen);
 
-  // Run
-  auto runAction = new RunAction();
+  auto runAction = new RunAction(fDetector, fWriteRoot);
+  runAction->SetGenerator(gen);
   SetUserAction(runAction);
 
-  // Event
   auto eventAction = new EventAction();
   SetUserAction(eventAction);
 
-  // Stepping (EventAction'a enerji ekler)
   SetUserAction(new SteppingAction(eventAction));
 }
